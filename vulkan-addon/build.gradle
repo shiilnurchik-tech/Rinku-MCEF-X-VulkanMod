@@ -43,6 +43,9 @@ dependencies {
 }
 
 loom {
+    // The bridge uses public GPU APIs only. MCEF's access widener is empty and its
+    // raw Fabric metadata is templated, so it must not be parsed transitively here.
+    getEnableTransitiveAccessWideners().set(false)
     mods {
         mcef_vulkan {
             sourceSet sourceSets.main
