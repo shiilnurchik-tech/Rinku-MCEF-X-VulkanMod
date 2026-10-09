@@ -60,7 +60,7 @@ jobs:
         run: |
           mkdir -p build
           ./gradlew --no-daemon --console=plain --stacktrace --no-parallel --max-workers=2 \
-            :fabric:build :vulkan-addon:build | tee build/ci-build.log
+            :fabric:build :vulkan-addon:build 2>&1 | tee build/ci-build.log
 
       - name: Report build failure diagnostics
         if: ${{ failure() }}
