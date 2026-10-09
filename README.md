@@ -10,6 +10,12 @@ MCEF is a mod and library for adding the Chromium web browser into Minecraft.
 
 **Current Chromium version:** `116.0.5845.190`
 
+## VulkanMod Add-on (Fabric / Minecraft 1.21.11)
+
+This repository also provides a **separate, client-only compatibility add-on** in [`vulkan-addon`](vulkan-addon/README.md). It replaces only the upload/presentation of completed MCEF browser frames with VulkanMod's GPU backend. Chromium/JCEF, browser input, downloads and the original MCEF artifacts remain unchanged.
+
+Install the add-on **alongside** MCEF from this branch and VulkanMod for 1.21.11. It does not bundle or replace either mod. Build it with `./gradlew :vulkan-addon:build` after preparing JCEF; see the [add-on documentation](vulkan-addon/README.md) for dependencies, development setup, API limitations and the verification checklist. There is no NeoForge add-on, as VulkanMod is Fabric-only. An in-game Vulkan compatibility test is still required.
+
 ## Supported Platforms
 
 - Windows 10/11 (x86_64, arm64)*

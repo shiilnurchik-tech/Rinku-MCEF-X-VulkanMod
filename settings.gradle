@@ -74,3 +74,4 @@ rootProject.name = 'mcef-1.21.11'
 include("common")
 include("fabric")
 include("neoforge")
+include("vulkan-addon")

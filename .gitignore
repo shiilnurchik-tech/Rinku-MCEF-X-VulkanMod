@@ -20,3 +20,8 @@
 /fabric/jar_output/
 /library_cached_sources/
 /minecraft_cached_sources/
+/vulkan-addon/.gradle/
+/vulkan-addon/build/
+/vulkan-addon/run_client/
+/vulkan-addon/run_server/
+/artifacts/

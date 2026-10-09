@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.cinemamod.mcef.vulkan.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "refmap": "mcef-vulkan-addon.refmap.json",
+  "client": [
+    "MixinMCEFRenderer",
+    "MixinMCEFBrowser"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -1,5 +1,17 @@
 # Changelog
 
+## [Unreleased — VulkanMod Add-on 1.0.0]
+
+### Added
+- Separate client-only `vulkan-addon` Fabric artifact for Minecraft 1.21.11, requiring MCEF and VulkanMod at runtime without embedding either.
+- MCEF-only mixins route completed CEF bitmaps through the active GPU device's command encoder instead of selecting OpenGL by `GlTexture` inheritance.
+- Stride-aware dirty-rectangle uploads, clipped popup composition/restoration, BGRA-to-RGBA conversion and straight-alpha uploads for the standard GUI pipeline.
+- Texture-view-before-texture disposal, reusable native upload memory and guards against late paints after browser cleanup.
+- CPU compositor unit tests, a local browser smoke-test page and installation/build/API documentation.
+- GitHub Actions workflow using Java 21 and the pinned JCEF submodule to build MCEF/the add-on, run all compositor cases, verify remapped jars/manifests and publish installable jars/checksums/test reports. In-game Vulkan verification remains separate.
+
+The original MCEF/Chromium rendering implementation and standalone Fabric/NeoForge artifacts are not replaced.
+
 ## [2.2.0]
 
 ### Added

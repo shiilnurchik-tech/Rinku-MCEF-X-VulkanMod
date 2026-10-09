@@ -1,0 +1,75 @@
+plugins {
+    id 'java'
+    id 'idea'
+    id 'fabric-loom' version "$fabric_loom_version"
+}
+
+version = "${vulkan_addon_version}-${minecraft_version}"
+
+base {
+    archivesName = 'mcef-vulkan-addon'
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    mappings loom.layered() {
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:parchment-${parchment_mc_version}:${parchment_version}@zip")
+    }
+    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+
+    // Compile against MCEF, but do not embed it or JCEF in the add-on jar.
+    compileOnly project(':common')
+    compileOnly files(project(':common').sourceSets.jcef.output)
+    modRuntimeOnly project(path: ':fabric', configuration: 'namedElements')
+
+    // VulkanMod is a required runtime mod, not a compile-time implementation detail.
+    // Pass -PvulkanmodJar=/absolute/path/to/the/1.21.11/jar for a development run.
+    def vulkanmodJar = providers.gradleProperty('vulkanmodJar')
+    if (vulkanmodJar.isPresent()) {
+        def runtimeJar = rootProject.file(vulkanmodJar.get())
+        if (!runtimeJar.isFile()) {
+            throw new GradleException("VulkanMod jar does not exist: ${runtimeJar}")
+        }
+        modRuntimeOnly files(runtimeJar)
+    }
+
+    testImplementation platform('org.junit:junit-bom:5.11.4')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+loom {
+    mixin {
+        useLegacyMixinAp = true
+        defaultRefmapName.set('mcef-vulkan-addon.refmap.json')
+    }
+    runs {
+        client {
+            client()
+            setConfigName('MCEF Vulkan Add-on Client')
+            ideConfigGenerated(true)
+            runDir('run_client')
+        }
+    }
+}
+
+tasks.named('test', Test) {
+    useJUnitPlatform()
+    systemProperty 'java.awt.headless', 'true'
+}
+
+tasks.named('jar', Jar) {
+    manifest {
+        // MCEF scans all manifests for this key when choosing its native bundle.
+        // Only the original MCEF jar must supply a JCEF commit, never this add-on.
+        getAttributes().remove('java-cef-commit')
+        attributes([
+                'Specification-Title': 'MCEF VulkanMod Add-on',
+                'Specification-Version': vulkan_addon_version,
+                'Implementation-Title': 'MCEF VulkanMod Add-on',
+                'Implementation-Version': vulkan_addon_version
+        ])
+    }
+}
+

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MCEF / VulkanMod — проверка готового кадра</title>
+  <style>
+    html, body { margin: 0; background: transparent; color: white; font: 16px sans-serif; }
+    main { margin: 18px; padding: 20px; background: rgba(20, 26, 38, .8); border-radius: 12px; }
+    h1 { font-size: 22px; }
+    .colors { display: flex; gap: 8px; flex-wrap: wrap; }
+    .swatch { width: 110px; height: 80px; display: grid; place-items: center; color: white; }
+    .red { background: #f00; } .green { background: #0f0; color: black; } .blue { background: #00f; }
+    .alpha { margin-top: 18px; height: 65px; background: linear-gradient(to right, transparent, #f00); }
+    .track { height: 45px; position: relative; margin: 18px 0; border: 1px solid #758195; overflow: hidden; }
+    .dot { width: 30px; height: 30px; background: #00ffcc; position: absolute; top: 7px;
+           animation: slide 4s linear infinite alternate; }
+    @keyframes slide { from { left: 0; } to { left: calc(100% - 30px); } }
+    input, select, button { font: inherit; padding: 6px; margin: 6px 0; }
+    .edge-popup { position: fixed; bottom: 8px; right: 8px; max-width: 90vw; }
+    #clock { font-variant-numeric: tabular-nums; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Проверка MCEF → VulkanMod</h1>
+    <p>Слева направо: красный, зелёный, синий. Цвета не должны меняться местами; текст не должен быть перевёрнут.</p>
+    <div class="colors">
+      <div class="swatch red">КРАСНЫЙ</div>
+      <div class="swatch green">ЗЕЛЁНЫЙ</div>
+      <div class="swatch blue">СИНИЙ</div>
+    </div>
+    <div class="alpha"></div>
+    <p>В прозрачном браузере за градиентом видна игра, без тёмных ореолов. В непрозрачном — фон Chromium.</p>
+    <div class="track"><div class="dot"></div></div>
+    <p>Движущийся квадрат и часы проверяют небольшие dirty rects: <span id="clock"></span></p>
+    <label>Ввод и курсор: <input value="Проверка ввода / cursor"></label><br>
+    <label>Popup:
+      <select>
+        <option>Открыть список и закрыть Escape</option>
+        <option>Красный</option><option>Зелёный</option><option>Синий</option>
+        <option>После закрытия не должно оставаться следов</option>
+      </select>
+    </label>
+    <p>Измените размер окна/GUI scale, затем несколько раз откройте и закройте браузер.</p>
+    <button id="background">Изменить фон под popup</button>
+  </main>
+  <select class="edge-popup">
+    <option>Popup возле края окна</option><option>Пункт 2</option><option>Пункт 3</option>
+    <option>Пункт 4</option><option>Пункт 5</option><option>Пункт 6</option>
+  </select>
+  <script>
+    const clock = document.querySelector('#clock');
+    setInterval(() => { clock.textContent = new Date().toISOString(); }, 100);
+    document.querySelector('#background').addEventListener('click', () => {
+      document.querySelector('main').style.background = `hsla(${Math.random() * 360}, 65%, 30%, .8)`;
+    });
+  </script>
+</body>
+</html>
