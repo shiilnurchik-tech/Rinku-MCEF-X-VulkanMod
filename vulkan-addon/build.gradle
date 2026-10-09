@@ -47,9 +47,6 @@ loom {
         mcef_vulkan {
             sourceSet sourceSets.main
         }
-        mcef {
-            sourceSet project(':fabric').sourceSets.main
-        }
     }
     mixin {
         useLegacyMixinAp = true
