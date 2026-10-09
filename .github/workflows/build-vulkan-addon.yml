@@ -56,9 +56,25 @@ jobs:
           dependency-graph: disabled
 
       - name: Build MCEF and add-on, including compositor tests
-        run: >-
-          ./gradlew --no-daemon --console=plain --stacktrace --no-parallel --max-workers=2
-          :fabric:build :vulkan-addon:build
+        shell: bash
+        run: |
+          mkdir -p build
+          ./gradlew --no-daemon --console=plain --stacktrace --no-parallel --max-workers=2 \
+            :fabric:build :vulkan-addon:build | tee build/ci-build.log
+
+      - name: Report build failure diagnostics
+        if: ${{ failure() }}
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          log = Path('build/ci-build.log')
+          if log.exists():
+              text = log.read_text(errors='replace')
+              if len(text) > 48000:
+                  text = text[:24000] + '\n... log truncated ...\n' + text[-24000:]
+              message = text.replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A')
+              print('::error title=Gradle build diagnostics::' + message)
+          PY
 
       - name: Verify and prepare installable jars
         run: python3 .github/scripts/prepare-vulkan-artifacts.py
@@ -80,5 +96,6 @@ jobs:
           path: |
             vulkan-addon/build/test-results/test/
             vulkan-addon/build/reports/tests/test/
+            build/ci-build.log
           if-no-files-found: ignore
           retention-days: 14

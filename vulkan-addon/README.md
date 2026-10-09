@@ -40,6 +40,18 @@
 
 Для Windows используйте `gradlew.bat` и подходящий путь к jar. Параметр `vulkanmodJar` не включает VulkanMod в распространяемый артефакт. Без него или без VulkanMod в `vulkan-addon/run_client/mods` dev-клиент не пройдёт проверку обязательных зависимостей.
 
+## Сборка через GitHub Actions
+
+Workflow [`.github/workflows/build-vulkan-addon.yml`](../.github/workflows/build-vulkan-addon.yml) запускается при изменении кода/конфигурации в push или pull request. Он:
+
+1. Клонирует исходники вместе с закреплённым JCEF submodule.
+2. Устанавливает Temurin JDK 21 и использует Gradle Wrapper репозитория.
+3. Собирает оригинальный Fabric MCEF и отдельный аддон, выполняя CPU-тесты.
+4. Проверяет содержимое remapped jar, mixin refmap, отсутствие встроенных зависимостей в аддоне и корректный JCEF commit в manifest оригинального MCEF.
+5. Публикует артефакт `mcef-vulkan-fabric-1.21.11-<номер запуска>` с двумя installable jar и `SHA256SUMS`. Отдельный артефакт `mcef-vulkan-tests-<номер запуска>` содержит JUnit XML и HTML-отчёт.
+
+Артефакты успешного запуска доступны в разделе **Actions → Build MCEF Vulkan add-on → Artifacts** и хранятся 14 дней. Workflow не скачивает Chromium natives и не запускает игру; проверка Vulkan на настоящем GPU остаётся отдельным шагом.
+
 ## Как работает мост
 
 ```text
