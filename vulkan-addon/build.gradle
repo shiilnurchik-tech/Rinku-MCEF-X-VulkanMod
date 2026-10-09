@@ -18,10 +18,13 @@ dependencies {
     }
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
 
-    // Compile against MCEF, but do not embed it or JCEF in the add-on jar.
-    compileOnly project(':common')
+    // Named project outputs are already in this workspace's mapping namespace.
+    // Do not use modRuntimeOnly for the Fabric project: Loom would eagerly inspect
+    // its dev jar during configuration, before Gradle has built it.
+    compileOnly project(path: ':common', configuration: 'namedElements')
     compileOnly files(project(':common').sourceSets.jcef.output)
-    modRuntimeOnly project(path: ':fabric', configuration: 'namedElements')
+    runtimeOnly project(path: ':fabric', configuration: 'namedElements')
+    modRuntimeOnly "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 
     // VulkanMod is a required runtime mod, not a compile-time implementation detail.
     // Pass -PvulkanmodJar=/absolute/path/to/the/1.21.11/jar for a development run.
@@ -40,6 +43,14 @@ dependencies {
 }
 
 loom {
+    mods {
+        mcef_vulkan {
+            sourceSet sourceSets.main
+        }
+        mcef {
+            sourceSet project(':fabric').sourceSets.main
+        }
+    }
     mixin {
         useLegacyMixinAp = true
         defaultRefmapName.set('mcef-vulkan-addon.refmap.json')
